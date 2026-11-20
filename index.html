@@ -1,0 +1,38 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>GTU OS 3140702 Banker&#x27;s Algorithm checker: Need matrix, Work column and a safe sequence</title>
+<meta name="description" content="GTU Hero&#x27;s OS guide counts Banker&#x27;s Algorithm in W2022, S2023 and W2024, each time as a full numerical with Allocation, Max and Available, usually 4 t">
+<style>body{font-family:system-ui,sans-serif;max-width:720px;margin:2rem auto;padding:0 1rem;line-height:1.5}input,textarea,select{margin:.3rem 0;padding:.3rem;width:min(100%,360px);box-sizing:border-box}textarea{width:min(100%,520px);min-height:6rem;font-family:ui-monospace,monospace}#out{font-weight:bold;margin-top:1rem;white-space:pre-wrap;font-family:ui-monospace,monospace}</style></head><body>
+<h1>GTU OS 3140702 Banker&#x27;s Algorithm checker: Need matrix, Work column and a safe sequence</h1>
+<p>GTU Hero&#x27;s OS guide counts Banker&#x27;s Algorithm in W2022, S2023 and W2024, each time as a full numerical with Allocation, Max and Available, usually 4 to 5 processes and 3 resource types. Unit 5 (Deadlock) is 8% of 3140702, but the 4 deadlock conditions plus one Banker&#x27;s numerical is easy scoring. Matrices daalo: this page writes the Need matrix, the Work column after every success, and whether the state is safe. Practice values are my own, not from a GTU paper. Need matrix skip mat karna, uske alag marks hote hain.</p>
+<h2>Tool</h2>
+<label>Allocation matrix (one process per line)<br><textarea id="alloc">1 0 1
+2 1 1
+0 1 0
+1 1 2
+0 0 1</textarea></label><br>
+<label>Max matrix (same order)<br><textarea id="mx">3 2 2
+3 2 2
+2 2 1
+2 2 3
+1 1 3</textarea></label><br>
+<label>Available<br><input id="avail" value="1 1 1"></label><br>
+<button type="button" onclick="go()">Show</button>
+<div id="out"></div>
+<h2>Facts used</h2>
+<ul><li>Need = Max minus Allocation, written as a full matrix. The guide says this is usually worth marks on its own.</li><li>Work starts as Available. A process may run if it is not finished and every column of its Need is &lt;= current Work.</li><li>When it runs, Work becomes Work + its Allocation, and it is added to the sequence. If every process finishes, the state is safe.</li><li>Self-check: the final Work must equal Available plus the column sums of Allocation (the total instances of each resource).</li><li>The default practice set (5 processes, Available = (1, 1, 1)) is safe, with one valid sequence &lt;P1, P2, P3, P4, P0&gt; and final Work (5, 4, 6).</li></ul>
+<h2>Galti mat karna</h2>
+<ul><li>Compare Need with the current Work, not with Max or the original Available.</li><li>Write the 4 deadlock conditions with one-line definitions if the question asks for them (mutual exclusion, hold and wait, no preemption, circular wait). The guide counted those in 5 of 6 papers.</li><li>A request question is different: first check Request &lt;= Need and Request &lt;= Available, pretend to grant it, then run the safety check on the new state.</li><li>More than one safe sequence can exist. Any valid one gets marks if the Need matrix and the Work column are shown.</li></ul>
+<p>Repeat table, unit weights and the 7-day OS plan (Day 4 is Banker&#x27;s without notes): <a href="https://gtuhero.com/blogs/gtu-os-paper-operating-system-pyq">GTU Hero</a> (GTU Hero is my project).</p>
+<script src="calc.js"></script>
+<script>
+function go(){
+const alloc = F.parseMatrix(document.getElementById('alloc').value, 'Allocation');
+  const mx = F.parseMatrix(document.getElementById('mx').value, 'Max');
+  const avail = F.parseVec(document.getElementById('avail').value, 'Available');
+  let out;
+  try { const r = F.bankers(alloc, mx, avail); out = F.format(r, alloc, mx, avail); }
+  catch (e) { out = 'Check your input: ' + e.message; }
+  document.getElementById('out').textContent = out;
+}
+go();
+</script>
+</body></html>
